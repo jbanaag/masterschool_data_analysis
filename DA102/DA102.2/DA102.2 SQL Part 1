@@ -1,0 +1,155 @@
+## DA 102.2 Basic SQL (19. Quiz)
+# Question 1
+SELECT id, occurred_at, total_amt_usd
+FROM orders
+ORDER BY occurred_at
+LIMIT 10;
+#Question 2
+SELECT total_amt_usd, id, account_id
+FROM orders
+ORDER BY total_amt_usd DESC
+LIMIT 5;
+#Question 3
+SELECT total_amt_usd, id, account_id
+FROM orders
+ORDER BY total_amt_usd
+LIMIT 20;
+
+## 21. Quiz
+#Question 1
+SELECT id, account_id, total_amt_usd
+FROM orders
+ORDER BY account_id, total_amt_usd DESC
+#Question 2
+SELECT id, account_id, total_amt_usd
+FROM orders
+ORDER BY total_amt_usd DESC, account_id
+#Question 3
+#Different because the total_amt_usd has such unique vales that they won't be
+# able to group and sort data
+
+## 25. Quiz
+#Question 1
+SELECT *
+FROM orders
+WHERE gloss_amt_usd >= 1000
+LIMIT 5;
+#Question 2
+SELECT *
+FROM orders
+WHERE total_amt_usd < 500
+LIMIT 10;
+
+#28. Quiz
+# Question 1
+SELECT name, website, primary_poc
+FROM accounts
+WHERE name='Exxon Mobil';
+
+#31. Quiz
+#Question 1
+SELECT (standard_amt_usd/standard_qty) AS standard_amt_per_order, id, account_id
+FROM orders
+LIMIT 10;
+#Question 2
+SELECT (poster_amt_usd/poster_qty) * 100 AS poster_percent_rev, id, account_id
+FROM orders
+WHERE poster_qty!=0
+LIMIT 10;
+#WRONG
+#CORRECT ANSWER
+SELECT id, account_id,
+poster_amt_usd/(standard_amt_usd + gloss_amt_usd + poster_amt_usd) AS post_per
+FROM orders
+LIMIT 10;
+
+#35. Quiz
+#Question 1
+SELECT *
+FROM accounts
+WHERE name LIKE 'C%';
+#Question 2
+SELECT *
+FROM accounts
+WHERE name LIKE '%one%';
+#Question 3
+SELECT *
+FROM accounts
+WHERE name LIKE '%s';
+
+#38. Quiz
+#Question 1
+SELECT name, primary_poc, sales_rep_id
+FROM accounts
+WHERE name IN('Walmart','Target','Nordstrom');
+#Question 2
+SELECT *
+FROM web_events
+WHERE channel IN('organic', 'adwords');
+
+#41. Quiz
+#Question 1
+SELECT name, primary_poc, sales_rep_id
+FROM accounts
+WHERE name NOT IN('Walmart','Target','Nordstrom');
+#Question 2
+SELECT *
+FROM web_events
+WHERE channel NOT IN('organic', 'adwords');
+#Question 3
+SELECT name
+FROM accounts
+WHERE name NOT LIKE 'C%';
+#Question 4
+SELECT name
+FROM accounts
+WHERE name NOT LIKE '%one%';
+#Question 5
+SELECT name
+FROM accounts
+WHERE name NOT LIKE '%s';
+
+#44 Quiz
+#Question 1
+SELECT *
+FROM orders
+WHERE standard_qty>1000 AND poster_qty=0 AND gloss_qty=0;
+#Question 2
+SELECT occurred_at, gloss_qty
+FROM orders
+WHERE gloss_qty BETWEEN 24 AND 29;
+#Includes the values of 24 and 29
+#Question 3
+SELECT *
+FROM web_events
+WHERE channel = 'organic' AND channel = 'adwords' AND occurred_at >= '%2016%'
+ORDER BY occurred_at; #WRONG
+SELECT *
+FROM web_events
+WHERE channel IN('organic', 'adwords') AND occurred_at >= '2016-01-01'
+ORDER BY occurred_at;
+#ANSWER
+SELECT *
+FROM web_events
+WHERE channel IN ('organic', 'adwords') AND occurred_at BETWEEN '2016-01-01' AND '2017-01-01'
+ORDER BY occurred_at DESC;
+
+#47. Quiz
+#Question 1
+SELECT id
+FROM orders
+WHERE gloss_qty>4000 OR poster_qty>4000;
+#Question 2
+SELECT *
+FROM orders
+WHERE standard_qty=0 AND (gloss_qty>1000 OR poster_qty>1000);
+#Question 3
+SELECT name
+FROM accounts
+WHERE (name LIKE 'C%' OR name LIKE 'W%') AND primary_poc LIKE '%ana%' AND primary_poc NOT LIKE '%eana$';
+#WRONG
+SELECT *
+FROM accounts
+WHERE (name LIKE 'C%' OR name LIKE 'W%')
+           AND ((primary_poc LIKE '%ana%' OR primary_poc LIKE '%Ana%')
+           AND primary_poc NOT LIKE '%eana%');
