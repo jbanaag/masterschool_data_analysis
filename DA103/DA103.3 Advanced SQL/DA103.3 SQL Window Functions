@@ -25,4 +25,64 @@ SELECT
 	total,
 	RANK() OVER(PARTITION BY account_id ORDER BY total DESC) AS total_rank
   FROM 
-  	orders	
+  	orders
+
+/* 23. Quiz: Comparing a Row to Previous Row */	
+/* Determine how the current order's total revenue compares to the next order's total revenue */
+WITH sum AS
+	(
+		SELECT
+			account_id,
+			occurred_at,
+			SUM(total_amt_usd) AS sum_total
+		  FROM 
+		  	orders
+		 GROUP BY account_id, occurred_at
+	)
+
+SELECT
+	occurred_at,
+	sum_total,
+	LEAD(sum_total) OVER (ORDER BY sum_total ASC) AS lead_sum_total,
+	LEAD(sum_total) OVER (ORDER BY sum_total ASC) - sum_total AS lead_difference
+  FROM 
+  	sum 
+
+/* 26. Quiz: Percentiles */
+/* Use the NTILE functionality to divide the accounts into 4 levels in terms of the amount of standard_qty 
+for their orders. Your resulting table should have the account_id, the occurred_at time for each order, 
+the total amount of standard_qty paper purchased, and one of four levels in a standard_quartile column. */
+SELECT
+	account_id,
+	occurred_at,
+	SUM(standard_qty) AS sum_standard_qty,
+	NTILE(4) OVER (PARTITION BY account_id ORDER BY SUM(standard_qty) ASC) AS standard_quartile
+  FROM 
+  	orders 
+ GROUP BY account_id, occurred_at
+
+/* Use the NTILE functionality to divide the accounts into two levels in terms of the amount of 
+gloss_qty for their orders. Your resulting table should have the account_id, the occurred_at time 
+for each order, the total amount of gloss_qty paper purchased, and one of two levels in a 
+gloss_half column. */
+SELECT
+	account_id,
+	occurred_at,
+	SUM(gloss_qty) AS sum_gloss_qty,
+	NTILE(2) OVER(PARTITION BY account_id ORDER BY SUM(gloss_qty) ASC) AS glass_half
+  FROM 
+  	orders
+ GROUP BY account_id, occurred_at
+
+/* Use the NTILE functionality to divide the orders for each account into 100 levels in terms of 
+the amount of total_amt_usd for their orders. Your resulting table should have the account_id, 
+the occurred_at time for each order, the total amount of total_amt_usd paper purchased, and one 
+of 100 levels in a total_percentile column. */
+SELECT
+	account_id,
+	occurred_at,
+	SUM(total_amt_usd) AS sum_total_amt_usd,
+	NTILE(100) OVER (PARTITION BY account_id ORDER BY SUM(total_amt_usd) ASC) AS total_percentile
+  FROM 
+  	orders 
+ GROUP BY account_id, occurred_at
