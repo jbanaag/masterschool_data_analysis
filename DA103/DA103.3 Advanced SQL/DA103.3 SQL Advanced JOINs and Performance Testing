@@ -1,0 +1,30 @@
+/* DA103.3 SQL Advanced JOINs and Performance Testing */
+/* 3. Quiz: FULL OUTER JOIN*/
+/* This type of question is rare, but FULL OUTER JOIN is perfect for it. In the following SQL Explorer, 
+write a query with FULL OUTER JOIN to fit the above described Parch & Posey scenario 
+(selecting all of the columns in both of the relevant tables, accounts and sales_reps) then answer 
+the subsequent multiple-choice quiz.*/
+SELECT
+	a.name AS account_name,
+	s.name AS sales_rep
+  FROM 
+  	accounts AS a
+FULL OUTER JOIN 
+	sales_reps AS s
+	ON s.id = a.sales_rep_id
+-- can add this to find if there are NULLs
+WHERE accounts.sales_rep_id IS NULL OR sales_reps.id IS NULL
+
+/* 6. Quiz: JOINS with Comparison Operators
+In the following SQL Explorer, write a query that left joins the accounts table and the sales_reps tables on 
+each sale rep's ID number and joins it using the < comparison operator on accounts.primary_poc and 
+sales_reps.name*/
+SELECT
+	a.name AS account_name,
+	a.primary_poc,
+	s.name AS sales_rep 
+  FROM
+  	accounts AS a 
+  	LEFT JOIN 
+  		sales_reps AS s
+  	ON a.primary_poc < s.name  
