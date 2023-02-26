@@ -65,3 +65,42 @@ SELECT
  GROUP BY o.shipping_city
  ORDER BY SUM(od.order_profits) DESC
 -- Answer: Lebanon 	 
+
+-- What's the average annual profit for that city across all years?
+SELECT
+	o.shipping_city,
+	AVG(od.order_profits) AS avg_order_profits
+ FROM 
+  	orders AS o
+ INNER JOIN order_details AS od
+    ON o.order_id = od.order_id
+ WHERE o.shipping_city = 'Lebanon'
+ GROUP BY o.shipping_city
+-- Answer: 27.67
+
+-- What is the distribution of customer types in the data?
+SELECT
+	c.customer_segment,
+	COUNT(*) AS customer_count
+  FROM customers AS c
+ GROUP BY c.customer_segment
+-- Answer:
+-- Consumer 410
+-- Corporate 237
+-- Home Office 148
+
+-- What's the most profitable product category on 
+-- average on Iowa across all years?
+SELECT
+	p.product_category,
+	AVG(od.order_profits) AS avg_order_profits
+  FROM 
+  	product AS p
+ INNER JOIN order_details AS od 
+    ON od.product_id = p.product_id
+ INNER JOIN orders AS o
+    ON o.order_id = od.order_id   
+ WHERE o.shipping_state = 'Iowa'
+ GROUP BY p.product_category 
+ ORDER BY AVG(od.order_profits) DESC
+-- Answer: Furniture 
