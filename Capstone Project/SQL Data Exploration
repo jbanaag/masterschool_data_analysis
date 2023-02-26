@@ -1,0 +1,67 @@
+/* DA105.1 Capstone Project - Data Exploration SQL */
+-- Data from bit.io data set
+
+-- How many customers do we have in the data?
+SELECT
+	COUNT(customer_name)
+  FROM customers AS c;
+-- Answer: 795
+
+-- What was the city with the most profit for the company in 2015?
+SELECT
+	o.shipping_city,
+	SUM(od.order_profits) AS profits
+  FROM 
+	orders AS o
+ INNER JOIN order_details AS od
+ 	ON o.order_id = od.order_id
+ WHERE shipping_date BETWEEN '2015-01-01' AND '2016-01-01'
+ GROUP BY o.shipping_city
+ ORDER BY SUM(od.order_profits) DESC
+-- Answer: New York City
+
+-- In 2015, what was the most profitable city's profit
+SELECT
+	o.shipping_city,
+	MAX(od.order_profits) AS max_profit
+  FROM 
+  	orders AS o
+ INNER JOIN order_details AS od
+    ON o.order_id = od.order_id
+ WHERE shipping_date BETWEEN '2015-01-01' AND '2016-01-01'
+       AND  o.shipping_city = 'New York City'
+ GROUP BY o.shipping_city
+-- Answer: 2240
+
+-- How many different cities do we have in the data?
+SELECT DISTINCT
+	COUNT(shipping_city)
+  FROM
+  	orders
+-- Answer: 5013
+
+-- Show the total spent by customers from low to high
+SELECT 
+	c.customer_id,
+	SUM(od.order_sales) AS sum_order_sales
+  FROM
+  	customers AS c
+ INNER JOIN orders AS o 
+    ON c.customer_id = o.customer_id
+ INNER JOIN order_details AS od 
+    ON o.order_id = od.order_id 
+ GROUP BY c.customer_id
+ ORDER BY SUM(od.order_sales) ASC;
+
+-- What is the most profitable city in the State of Tennessee?
+SELECT
+	o.shipping_city,
+	SUM(od.order_profits) AS sum_order_profits
+  FROM 
+  	orders AS o
+ INNER JOIN order_details AS od
+    ON o.order_id = od.order_id
+ WHERE shipping_state = 'Tennessee'
+ GROUP BY o.shipping_city
+ ORDER BY SUM(od.order_profits) DESC
+-- Answer: Lebanon 	 
